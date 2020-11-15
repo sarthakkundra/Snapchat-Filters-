@@ -6,20 +6,21 @@
 5) Selectors
 */
 
-var outputWidth;
-var outputHeight;
+let outputWidth;
+let outputHeight;
 
-var faceTracker;
-var videoInput;
+let faceTracker;
+let videoInput;
 
-var imgThugLifeGoggles;
+let imgThugLifeGoggles;
 
-var selected = -1;
+let selected = -1;
 
 // Load images for filters
 
 function preload() {
-    imgThugLifeGoggles = loadImage(`https://assets.stickpng.com/thumbs/584999b17b7d4d76317f6000.png`);
+    imgThugLifeGoggles = loadImage("goggles.png");
+    console.log("Test")
 }
 // Setup video feed, filter selector etc
 function setup() {
@@ -27,11 +28,11 @@ function setup() {
     const maxWidth = Math.min(windowWidth, windowHeight);
     pixelDensity(1);
     outputWidth = maxWidth;
-    outerHeight = outputWidth * 0.75;
+    outputHeight = maxWidth * 0.75;
 
     createCanvas(outputWidth, outerHeight);
 
-    capture = createCapture(VIDEO);
+    videoInput = createCapture(VIDEO);
     videoInput.size(outputWidth, outputHeight);
     videoInput.hide();
 
@@ -48,6 +49,7 @@ function setup() {
 
     faceTracker  = new clm.tracker();
     faceTracker.init();
+    console.log(faceTracker);
     faceTracker.start(videoInput.elt);
 
 }
@@ -58,4 +60,41 @@ function applyFilter() {
 
 // Draw the filter
 
+function draw  () {
+    image(videoInput, 0,  0, outputWidth, outputHeight);
+
+    switch(selected)  {
+        case '-1': 
+            break;
+        case '0':
+            drawThugLifeGoggles();
+            break;
+    }
+}
+
+
 // Place the filter
+
+function drawThugLifeGoggles() {
+    const positions = faceTracker.getCurrentPosition();
+    if(positions !== false){
+        push();
+        const widthX = Math.abs(positions[13][0] - positions[1][0]) * 1.2;
+
+        const  widthY = Math.abs(positions[7][1] - Math.min(positions[16][1], positions[20][1])) * 1.2;
+
+        translate(-widthX/2,  -widthY/2);
+
+        image(imgThugLifeGoggles, positions[62][0], positions[62][1], widthX, widthY);
+        pop();
+    }
+}
+
+function windowResized()
+{
+  const maxWidth = Math.min(windowWidth, windowHeight);
+  pixelDensity(1);
+  outputWidth = maxWidth;
+  outputHeight = maxWidth * 0.75; // 4:3
+  resizeCanvas(outputWidth, outputHeight);
+}
