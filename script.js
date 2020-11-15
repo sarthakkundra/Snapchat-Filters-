@@ -25,10 +25,7 @@ function preload() {
 // Setup video feed, filter selector etc
 function setup() {
 
-    const maxWidth = Math.min(windowWidth, windowHeight);
-    pixelDensity(1);
-    outputWidth = maxWidth;
-    outputHeight = maxWidth * 0.75;
+windowResized();
 
     createCanvas(outputWidth, outerHeight);
 
@@ -77,15 +74,16 @@ function draw  () {
 
 function drawThugLifeGoggles() {
     const positions = faceTracker.getCurrentPosition();
+    console.log(positions)
     if(positions !== false){
         push();
-        const widthX = Math.abs(positions[13][0] - positions[1][0]) * 1.2;
+        const widthX = Math.abs(positions[14][0] - positions[1][0]) * 1.2;
 
         const  widthY = Math.abs(positions[7][1] - Math.min(positions[16][1], positions[20][1])) * 1.2;
 
         translate(-widthX/2,  -widthY/2);
 
-        image(imgThugLifeGoggles, positions[62][0], positions[62][1], widthX, widthY);
+        image(imgThugLifeGoggles, positions[62][0], positions[63][1], widthX, widthY);
         pop();
     }
 }
